@@ -20,6 +20,7 @@ self.addEventListener("install", function (evt) {
     evt.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
             console.log("Your files were pre-cached successfully");
+            return cache.addAll(FILES_TO_CACHE);
         })
     );
     self.skipWaiting();
@@ -45,6 +46,8 @@ self.addEventListener("activate", function (evt) {
 //fetch
 self.addEventListener("fetch", function (evt) {
     if (evt.request.url.includes("/api/")) {
+        console.log("[Service Worker] Fetch (data)", evt.request.url);
+        
         evt.respondWith(
             caches.open(DATA_CACHE_NAME).then(cache => {
                 return fetch(evt.request)
